@@ -23,9 +23,9 @@ namespace theCPU.SharpFtpServer.Server
     public delegate DownloadFileResponse DownloadFileDelegate(string username, string path);
     public delegate bool DeleteFileDelegate(string username, string path);
     public delegate bool FileRenameDelegate(string username, string oldPath, string newPath);
-    public delegate bool CanCreateFile(string username, string path);
-    public delegate bool CreateFile(string username, string path, byte[] bytes);
-    public delegate bool CreateDirectory(string username, string path);
+    public delegate bool CanCreateFileDelegate(string username, string path);
+    public delegate bool CreateFileDelegate(string username, string path, byte[] bytes);
+    public delegate bool CreateDirectoryDelegate(string username, string path);
 
     public class FtpServerCallbacks
     {
@@ -41,9 +41,9 @@ namespace theCPU.SharpFtpServer.Server
         public event DownloadFileDelegate OnDownloadFile = null!;
         public event DeleteFileDelegate OnDeleteFile = null!;
         public event FileRenameDelegate OnFileRename = null!;
-        public event CanCreateFile OnCanCreateFile = null!;
-        public event CreateFile OnCreateFile = null!;
-        public event CreateDirectory OnCreateDirectory = null!;
+        public event CanCreateFileDelegate OnCanCreateFile = null!;
+        public event CreateFileDelegate OnCreateFile = null!;
+        public event CreateDirectoryDelegate OnCreateDirectory = null!;
 
         public bool CheckUsername(string username) => OnCheckUsername.Invoke(username);
         public bool CheckPassword(string username, string password) => OnCheckPassword.Invoke(username, password);
