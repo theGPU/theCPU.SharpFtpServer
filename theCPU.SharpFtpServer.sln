@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34511.84
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "theCPU.SharpFtpServer", "theCPU.SharpFtpServer\theCPU.SharpFtpServer.csproj", "{4DCC1ED1-8D6E-42D2-9F0F-1D3911DA86BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "Sample\Sample.csproj", "{CFB37101-A8A9-4FC5-8DBD-8CC9785BC474}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4DCC1ED1-8D6E-42D2-9F0F-1D3911DA86BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DCC1ED1-8D6E-42D2-9F0F-1D3911DA86BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DCC1ED1-8D6E-42D2-9F0F-1D3911DA86BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DCC1ED1-8D6E-42D2-9F0F-1D3911DA86BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFB37101-A8A9-4FC5-8DBD-8CC9785BC474}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFB37101-A8A9-4FC5-8DBD-8CC9785BC474}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFB37101-A8A9-4FC5-8DBD-8CC9785BC474}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFB37101-A8A9-4FC5-8DBD-8CC9785BC474}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F6ABFE0B-80A8-4BEE-A183-9D3712286AD2}
+	EndGlobalSection
+EndGlobal
