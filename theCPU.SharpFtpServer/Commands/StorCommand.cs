@@ -24,16 +24,14 @@ namespace theCPU.SharpFtpServer.Commands
                 Debugger.Break();
 
             await client.SendCommandMessage(FtpCommandResult.TransferResponseOpenConnection(client.TransferType, path));
-            await client.ReadData(out var dataStream, out var cts);
-            var bytes = dataStream.ToArray();
-            dataStream.Dispose();
-            dataStream = null;
+            var dataStream = client.GetDataStream();
+            var complete = server.Callbacks.CreateFile(client.Username, path, dataStream);
             await client.CloseDataChannel();
 
             if (server.Config.AutoGC)
                 GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, true, true);
 
-            if (!server.Callbacks.CreateFile(client.Username, path, bytes))
+            if (!complete)
                 return FtpCommandResult.ClosingDataConnection;
 
             return FtpCommandResult.ClosingDataConnection;

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using theCPU.SharpFtpServer.Utils;
@@ -38,19 +40,25 @@ namespace Sample.VirtualFS
         public bool IsDirectoryExist(string path) => GetDirectoriesRecursiveWithRoot().Any(x => x.Path.Equals(path, StringComparison.InvariantCultureIgnoreCase));
         public bool IsFileExist(string path) => GetFilesRecursive().Any(x => x.Path.Equals(path, StringComparison.InvariantCultureIgnoreCase));
 
-        public bool TryGetDirectory(string path, out VirtualFsDirectory? dir)
+        public bool TryGetDirectory(string path, [MaybeNullWhen(false)] out VirtualFsDirectory? dir)
         {
             dir = GetDirectoriesRecursiveWithRoot().FirstOrDefault(x => x.Path.Equals(path, StringComparison.InvariantCultureIgnoreCase));
             return dir != null;
         }
 
-        public bool TryGetFile(string path, out VirtualFsFile? file)
+        public bool TryGetFile(string path, [MaybeNullWhen(false)] out VirtualFsFile? file)
         {
             file = GetFilesRecursive().FirstOrDefault(x => x.Path.Equals(path, StringComparison.InvariantCultureIgnoreCase));
             return file != null;
         }
 
-        public bool TryCreateFile(string path, byte[] data, bool createDirectories, out VirtualFsFile? file)
+        public bool TryCreateFile(string path, byte[] data, bool createDirectories, [MaybeNullWhen(false)] out VirtualFsFile file)
+        {
+            using var ms = new MemoryStream();
+            return TryCreateFile(path, ms, createDirectories, out file);
+        }
+
+        public bool TryCreateFile(string path, Stream data, bool createDirectories, [MaybeNullWhen(false)] out VirtualFsFile file)
         {
             file = null;
             VirtualFsDirectory? targetDir = null;
@@ -64,7 +72,11 @@ namespace Sample.VirtualFS
             if (targetDir == null)
                 return false;
 
-            file = new() { Name = path.Split('/').Last(), Parent = targetDir!, Data = data };
+            var ms = new MemoryStream();
+            data.CopyTo(ms);
+            ms.Dispose();
+
+            file = new() { Name = path.Split('/').Last(), Parent = targetDir!, Data = ms.ToArray() };
             targetDir!.Files.Add(file);
             return true;
         }
@@ -104,6 +116,18 @@ namespace Sample.VirtualFS
 
             file!.Parent.Files.Remove(file);
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, true, true);
+            return true;
+        }
+
+        public bool DeleteDirectory(string path)
+        {
+            if (!TryGetDirectory(path, out var directory))
+                return false;
+
+            if (directory!.GetEntries().Any())
+                return false;
+
+            directory.Parent!.Directories.Remove(directory);
             return true;
         }
     }

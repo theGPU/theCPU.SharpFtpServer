@@ -1,4 +1,5 @@
 ﻿using Sample.VirtualFS;
+using System.Collections.Concurrent;
 using System.Net;
 using System.Text;
 using theCPU.SharpFtpServer.POCO;
@@ -33,6 +34,7 @@ namespace Sample
             ftpServer.Callbacks.OnCanCreateFile += (username, path) => true;
             ftpServer.Callbacks.OnCreateFile += (username, path, bytes) => _virtualFsRoot.TryCreateFile(path, bytes, true, out _);
             ftpServer.Callbacks.OnCreateDirectory += (username, path) => _virtualFsRoot.CreateDirectories(path) != null;
+            ftpServer.Callbacks.OnDeleteDirectory += (username, path) => _virtualFsRoot.DeleteDirectory(path);
 
             var serverTask = ftpServer.Start(cts.Token);
 
@@ -51,6 +53,7 @@ namespace Sample
             _virtualFsRoot.TryCreateFile("/Normal.txt", normalFileContent, true, out _);
             _virtualFsRoot.TryCreateFile("/Empty.txt", [], true, out _);
             _virtualFsRoot.TryCreateFile("/Google.txt", [], true, out _);
+            _virtualFsRoot.TryCreateFile("/GoogleStream.txt", [], true, out _);
             _virtualFsRoot.TryCreateFile("/NormalDirectory/Normal.txt", normalFileContent, true, out _);
             _virtualFsRoot.TryCreateFile("/NormalDirectory/NormalDirectory/Normal.txt", normalFileContent, true, out _);
         }
@@ -69,12 +72,45 @@ namespace Sample
                 return new DownloadFileResponse(null);
 
             if (path == "/Google.txt")
-                return new DownloadFileResponse(_client.GetStreamAsync("https://www.google.com").Result, true);
+            {
+                var result = new BlockingCollection<byte[]>();
+                result.Add(_client.GetByteArrayAsync("https://www.google.com").Result);
+                result.CompleteAdding();
+                return new DownloadFileResponse(result, true);
+            }
+
+            if (path == "/GoogleStream.txt")
+            {
+                var result = new BlockingCollection<byte[]>();
+                Task.Run(() => DownloadGoogleStream(result));
+                return new DownloadFileResponse(result, true);
+            }
 
             if (_virtualFsRoot.TryGetFile(path, out var file))
-                return new DownloadFileResponse(new MemoryStream(file!.Data));
+            {
+                var result = new BlockingCollection<byte[]>();
+                result.Add(file!.Data);
+                result.CompleteAdding();
+                return new DownloadFileResponse(result);
+            }
 
             return new DownloadFileResponse(null);
+        }
+
+        private static async Task DownloadGoogleStream(BlockingCollection<byte[]> result)
+        {
+            var stream = await _client.GetStreamAsync("https://www.google.com");
+            var buffer = new byte[128];
+            while (true)
+            {
+                var readed = await stream.ReadAsync(buffer, 0, buffer.Length);
+                if (readed == 0)
+                    break;
+
+                result.Add(buffer[0..readed]);
+            }
+
+            result.CompleteAdding();
         }
     }
 }

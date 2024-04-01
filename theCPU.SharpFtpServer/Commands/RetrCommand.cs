@@ -28,14 +28,14 @@ namespace theCPU.SharpFtpServer.Commands
             await client.SendCommandMessage(FtpCommandResult.TransferResponseOpenConnection(client.TransferType, path));
 
             var fileStreamData = server.Callbacks.GetDownloadStream(client.Username, path);
-            if (fileStreamData.Stream == null)
+            if (fileStreamData.Bytes == null)
                 return FtpCommandResult.FileActionFailed;
 
-            var uploadTask = client.SendData(fileStreamData.Stream, out var uploadCts);
+            var uploadTask = client.SendData(fileStreamData.Bytes);
             await uploadTask;
 
             if (fileStreamData.AutoDispose)
-                fileStreamData.Stream.Dispose();
+                fileStreamData.Bytes.Dispose();
 
             await client.CloseDataChannel();
 

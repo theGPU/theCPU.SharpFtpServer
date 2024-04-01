@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -53,11 +54,13 @@ namespace theCPU.SharpFtpServer.POCO
         Task<bool> SetupDataChannel();
         Task CloseDataChannel();
 
+        NetworkStream GetDataStream();
         Task ReadData(out MemoryStream bufferStream, out CancellationTokenSource cts);
 
         Task SendData(Stream stream, out CancellationTokenSource cts);
         Task SendData(FtpCommandResult result);
         Task SendData(string message);
+        Task SendData(BlockingCollection<byte[]> data);
         Task SendData(IEnumerable<byte> data);
 
         Task SendCommandMessage(FtpCommandResult result);
@@ -186,6 +189,7 @@ namespace theCPU.SharpFtpServer.POCO
             _passiveChannel?.Close();
         }
 
+        public NetworkStream GetDataStream() => new NetworkStream(_passiveChannel!);
         public Task ReadData(out MemoryStream bufferStream, out CancellationTokenSource cts)
         {
             var ctsInternal = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken);
@@ -244,6 +248,14 @@ namespace theCPU.SharpFtpServer.POCO
         public async Task SendData(FtpCommandResult result) => await SendData($"{result.Code} {result.Message}");
         public async Task SendData(string message) => await SendData(Encoding.UTF8.GetBytes(message+'\n'));
         public async Task SendData(IEnumerable<byte> bytes) => await _passiveChannel!.SendAsync(bytes.ToArray(), _cancellationToken); //_passiveChannel!.Send(bytes.ToArray()); //await _passiveChannel!.SendAsync(bytes.ToArray(), _cancellationToken);
+        public async Task SendData(BlockingCollection<byte[]> bytes)
+        {
+            while (!bytes.IsCompleted)
+            {
+                if (bytes.TryTake(out var buffer, 10))
+                    await _passiveChannel!.SendAsync(buffer);
+            }
+        }
 
         public async Task SendCommandMessage(FtpCommandResult result) => await SendCommandMessage($"{result.Code} {result.Message}");
         public async Task SendCommandMessage(string message) => await SendCommandMessage(Encoding.UTF8.GetBytes(message+'\n'));
