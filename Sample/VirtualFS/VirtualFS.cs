@@ -54,7 +54,7 @@ namespace Sample.VirtualFS
 
         public bool TryCreateFile(string path, byte[] data, bool createDirectories, [MaybeNullWhen(false)] out VirtualFsFile file)
         {
-            using var ms = new MemoryStream();
+            using var ms = new MemoryStream(data);
             return TryCreateFile(path, ms, createDirectories, out file);
         }
 
@@ -74,9 +74,18 @@ namespace Sample.VirtualFS
 
             var ms = new MemoryStream();
             data.CopyTo(ms);
-            ms.Dispose();
+            ms.Seek(0, SeekOrigin.Begin);
 
             file = new() { Name = path.Split('/').Last(), Parent = targetDir!, Data = ms.ToArray() };
+
+            //prevent stuck buffer in LOH
+            var buffer = ms.GetBuffer();
+            Array.Clear(buffer, 0, buffer.Length);
+            ms.Position = 0;
+            ms.SetLength(0);
+            ms.Capacity = 0;
+            ms.Dispose();
+
             targetDir!.Files.Add(file);
             return true;
         }
