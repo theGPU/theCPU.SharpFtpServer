@@ -61,7 +61,7 @@ namespace Sample
         private static DirectoryListResponse OnGetDirectoryEntries(string username, string path)
         {
             if (_virtualFsRoot.TryGetDirectory(path, out var dir))
-                return new DirectoryListResponse(true, dir!.GetEntries().Select(x => new FtpEntryInfo(x.IsDirectory, x.Name, DateTime.Now, x.Length)));
+                return new DirectoryListResponse(true, dir.GetEntries().Select(x => new FtpEntryInfo(x.IsDirectory, x.Name, DateTime.Now, x.Length)));
 
             return new DirectoryListResponse(false, null);
         }
@@ -89,7 +89,7 @@ namespace Sample
             if (_virtualFsRoot.TryGetFile(path, out var file))
             {
                 var result = new BlockingCollection<byte[]>();
-                result.Add(file!.Data);
+                result.Add(file.Data);
                 result.CompleteAdding();
                 return new DownloadFileResponse(result);
             }

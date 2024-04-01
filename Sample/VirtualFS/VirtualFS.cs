@@ -40,13 +40,13 @@ namespace Sample.VirtualFS
         public bool IsDirectoryExist(string path) => GetDirectoriesRecursiveWithRoot().Any(x => x.Path.Equals(path, StringComparison.InvariantCultureIgnoreCase));
         public bool IsFileExist(string path) => GetFilesRecursive().Any(x => x.Path.Equals(path, StringComparison.InvariantCultureIgnoreCase));
 
-        public bool TryGetDirectory(string path, [MaybeNullWhen(false)] out VirtualFsDirectory? dir)
+        public bool TryGetDirectory(string path, [MaybeNullWhen(false)] out VirtualFsDirectory dir)
         {
             dir = GetDirectoriesRecursiveWithRoot().FirstOrDefault(x => x.Path.Equals(path, StringComparison.InvariantCultureIgnoreCase));
             return dir != null;
         }
 
-        public bool TryGetFile(string path, [MaybeNullWhen(false)] out VirtualFsFile? file)
+        public bool TryGetFile(string path, [MaybeNullWhen(false)] out VirtualFsFile file)
         {
             file = GetFilesRecursive().FirstOrDefault(x => x.Path.Equals(path, StringComparison.InvariantCultureIgnoreCase));
             return file != null;
