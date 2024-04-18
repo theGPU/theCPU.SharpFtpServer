@@ -31,6 +31,7 @@ namespace theCPU.SharpFtpServer.POCO
 
         string Username { get; }
         string WorkingDirectory { get; }
+        bool LoggedIn { get; }
 
         ClientTransferType TransferType { get; }
         ClientConnectionType ConnectionType { get; }
@@ -42,6 +43,7 @@ namespace theCPU.SharpFtpServer.POCO
     {
         string Username { get; set; }
         string WorkingDirectory { get; set; }
+        bool LoggedIn { get; set; }
 
         ClientTransferType TransferType { get; set; }
         ClientConnectionType ConnectionType { get; set; }
@@ -89,6 +91,7 @@ namespace theCPU.SharpFtpServer.POCO
 
         public string Username { get; set; }
         public string WorkingDirectory { get; set; }
+        public bool LoggedIn { get; set; }
         public ClientTransferType TransferType { get; set; } = ClientTransferType.Ascii;
         public ClientConnectionType ConnectionType { get; set; } = ClientConnectionType.Active;
 
@@ -139,15 +142,32 @@ namespace theCPU.SharpFtpServer.POCO
 
         private async Task ProcessCommand()
         {
-            Console.WriteLine(_command);
+            FtpServer.Logger.LogDebug($"Client {this}: processing command \"{_command}\"");
             var commandData = _command.Split(' ', 2);
             if (!CommandRegistar.Handlers!.TryGetValue(commandData[0], out var commandHandler))
             {
+                FtpServer.Logger.LogTrace($"Client {this}: Command not implemented");
                 await SendCommandMessage(FtpCommandResult.CommandNotImplemented);
                 return;
             }
 
-            var commandResult = await commandHandler.Invoke(FtpServer, this, commandData.Length > 1 ? commandData[1] : null);
+            if (!this.LoggedIn && !CommandRegistar.AnonymousCommands!.Value.Contains(commandHandler))
+            {
+                FtpServer.Logger.LogTrace($"Client {this}: Command require authorization");
+                await SendCommandMessage(FtpCommandResult.CommandNotImplemented);
+                return;
+            }
+
+            var commandArgs = commandData.Length > 1 ? commandData[1] : null;
+            if (!await commandHandler.PreInvoke(FtpServer, this, commandArgs))
+            {
+                FtpServer.Logger.LogTrace($"Client {this}: preInvoke returned false");
+                await SendCommandMessage(FtpCommandResult.ActionAborted);
+            }
+
+            var commandResult = await commandHandler.Invoke(FtpServer, this, commandArgs);
+            await commandHandler.PostInvoke(FtpServer, this, commandArgs);
+
             await SendCommandMessage(commandResult);
         }
 
@@ -257,10 +277,10 @@ namespace theCPU.SharpFtpServer.POCO
             }
         }
 
-        public async Task SendCommandMessage(FtpCommandResult result) => await SendCommandMessage($"{result.Code} {result.Message}");
+        public async Task SendCommandMessage(FtpCommandResult result) => await SendCommandMessage($"{result.Code}{(result.Message.StartsWith('-') ? "" : " ")}{result.Message}");
         public async Task SendCommandMessage(string message) => await SendCommandMessage(Encoding.UTF8.GetBytes(message+'\n'));
         public async Task SendCommandMessage(IEnumerable<byte> bytes) => await _socket.SendAsync(bytes.ToArray(), _cancellationToken); //_socket.Send(bytes.ToArray()); //await _socket.SendAsync(bytes.ToArray(), _cancellationToken);
-        public override string ToString() => this.Username;
+        public override string ToString() => $"{this.Username} ({this.RemoteEndPoint})";
 
         public void Dispose()
         {

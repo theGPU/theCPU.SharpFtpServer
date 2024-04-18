@@ -8,10 +8,12 @@ using theCPU.SharpFtpServer.Commands.Base;
 using theCPU.SharpFtpServer.POCO;
 using theCPU.SharpFtpServer.Server;
 
-namespace theCPU.SharpFtpServer.Commands
+namespace theCPU.SharpFtpServer.Commands.Features
 {
-    internal class ListCommand : BaseFtpCommand
+    internal class MlsdCommand : BaseFtpCommand, IFtpFeatureCommand
     {
+        public string Annotation => $"{this.Name}";
+
         public override async Task<FtpCommandResult> Invoke(IFtpServer server, IFtpClientControls client, string? args)
         {
             var path = NormalizePath(args ?? client.WorkingDirectory);
@@ -22,8 +24,8 @@ namespace theCPU.SharpFtpServer.Commands
             if (!await client.SetupDataChannel())
                 Debugger.Break();
 
-            await client.SendCommandMessage(FtpCommandResult.TransferResponseOpenConnection(client.TransferType, this.Name));
-            var data = String.Join('\n', directoryData.Entries!.Select(x => x.Serialize()));
+            var data = String.Join('\n', directoryData.Entries!.Select(x => x.MSerialize()));
+            await client.SendCommandMessage(FtpCommandResult.TransferResponseOpenConnection(client.TransferType, this.Name, Encoding.UTF8.GetByteCount(data)));
             await client.SendData(data);
             server.Logger.LogDebug(this, $"Sending List data to client {client}\n{data}");
             await client.CloseDataChannel();

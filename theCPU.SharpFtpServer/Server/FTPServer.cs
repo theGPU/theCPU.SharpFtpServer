@@ -15,7 +15,8 @@ namespace theCPU.SharpFtpServer.Server
     {
         FtpServerStage Stage { get; }
         FtpServerConfig Config { get; }
-        FtpServerCallbacks Callbacks { get; }
+        FTPServerCallbacks Callbacks { get; }
+        FTPServerLogger Logger { get; }
 
         Task Start(CancellationToken ct);
     }
@@ -29,7 +30,9 @@ namespace theCPU.SharpFtpServer.Server
 
         private CancellationToken _cancellationToken;
         private Task _serverTask = null!;
-        public FtpServerCallbacks Callbacks { get; init; }
+        public FTPServerCallbacks Callbacks { get; init; }
+
+        public FTPServerLogger Logger { get; init; }
 
         private readonly List<FtpClient> _activeClients = new List<FtpClient>();
 
@@ -37,8 +40,10 @@ namespace theCPU.SharpFtpServer.Server
 
         public FtpServer(FtpServerConfig config)
         {
+            Logger = new FTPServerLogger();
+
             Config = config;
-            Callbacks = new FtpServerCallbacks();
+            Callbacks = new FTPServerCallbacks();
 
             _serverSocket = new Socket(SocketType.Stream, ProtocolType.Tcp);
             _serverSocket.Bind(Config.EndPoint);

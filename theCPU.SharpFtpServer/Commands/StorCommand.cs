@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using theCPU.SharpFtpServer.Commands.Base;
 using theCPU.SharpFtpServer.POCO;
 using theCPU.SharpFtpServer.Server;
 

@@ -30,7 +30,7 @@ namespace theCPU.SharpFtpServer.Server
     public delegate bool CreateDirectoryDelegate(string username, string path);
     public delegate bool DeleteDirectoryDelegate(string username, string path);
 
-    public class FtpServerCallbacks
+    public class FTPServerCallbacks
     {
         public event CheckUsernameDelegte OnCheckUsername = null!;
         public event CheckPasswordDelegte OnCheckPassword = null!;

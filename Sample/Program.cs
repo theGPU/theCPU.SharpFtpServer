@@ -36,8 +36,12 @@ namespace Sample
             ftpServer.Callbacks.OnCreateDirectory += (username, path) => _virtualFsRoot.CreateDirectories(path) != null;
             ftpServer.Callbacks.OnDeleteDirectory += (username, path) => _virtualFsRoot.DeleteDirectory(path);
 
+            ftpServer.Logger.LogLevel = LogLevel.Debug;
+            ftpServer.Logger.Callback = (level, message) => Console.WriteLine($"[{level}]: {message}");
+
             var serverTask = ftpServer.Start(cts.Token);
 
+            Console.WriteLine("FTP server running");
             Console.ReadLine();
             cts.Cancel();
             await ftpServer.WaitShutdown();
@@ -56,6 +60,10 @@ namespace Sample
             _virtualFsRoot.TryCreateFile("/GoogleStream.txt", [], true, out _);
             _virtualFsRoot.TryCreateFile("/NormalDirectory/Normal.txt", normalFileContent, true, out _);
             _virtualFsRoot.TryCreateFile("/NormalDirectory/NormalDirectory/Normal.txt", normalFileContent, true, out _);
+
+            Console.WriteLine("Sample virtualFs structure:");
+            foreach (var entry in _virtualFsRoot.GetEntriesRecursive().Skip(1))
+                Console.WriteLine($"{entry.Path}{(entry.IsDirectory ? "/" : "")}");
         }
 
         private static DirectoryListResponse OnGetDirectoryEntries(string username, string path)

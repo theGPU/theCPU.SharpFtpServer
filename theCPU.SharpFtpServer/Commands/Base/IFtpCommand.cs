@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using theCPU.SharpFtpServer.POCO;
 using theCPU.SharpFtpServer.Server;
 
-namespace theCPU.SharpFtpServer.Commands
+namespace theCPU.SharpFtpServer.Commands.Base
 {
     public interface IFtpCommand
     {
@@ -14,5 +14,7 @@ namespace theCPU.SharpFtpServer.Commands
         byte Priority { get; }
 
         Task<FtpCommandResult> Invoke(IFtpServer server, IFtpClientControls client, string? args);
+        Task<bool> PreInvoke(IFtpServer server, IFtpClientControls client, string? args);
+        Task PostInvoke(IFtpServer server, IFtpClientControls client, string? args);
     }
 }

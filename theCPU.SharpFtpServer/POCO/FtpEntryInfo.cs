@@ -24,5 +24,6 @@ namespace theCPU.SharpFtpServer.POCO
         public long Length { get; init; }
 
         public string Serialize() => $"{(IsDirectory ? "drwxr-xr-x" : "-rw-r--r--")}    {(IsDirectory ? 2 : 1)} 1001     1001     {Length} {LastWriteTime.ToString("MMM dd  yyyy", CultureInfo.InvariantCulture)} {Name}";
+        public string MSerialize() => $"size={Length};type={(IsDirectory ? "dir" : "file")};perm={(IsDirectory ? "eclmdf" : "arwdf")};modify={LastWriteTime.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture)} {Name}";
     }
 }

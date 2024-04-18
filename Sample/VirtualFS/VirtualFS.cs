@@ -107,7 +107,6 @@ namespace Sample.VirtualFS
                     dirPath = dirPath.Remove(0, 1);
                 if (!TryGetDirectory(dirPath, out var dir))
                 {
-                    Console.WriteLine(dirPath);
                     dir = new() { Name = dirPath.Split('/').Last(), Parent = lastDir };
                     lastDir!.Directories.Add(dir);
                 }
