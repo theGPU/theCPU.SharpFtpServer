@@ -18,7 +18,6 @@ namespace Sample
 
             var ftpConfig = new FtpServerConfig(new IPEndPoint(IPAddress.Loopback, 2121), 512, true);
             var ftpServer = new FtpServer(ftpConfig);
-            var cts = new CancellationTokenSource();
 
             CommandRegistar.Init();
 
@@ -39,6 +38,7 @@ namespace Sample
             ftpServer.Logger.LogLevel = LogLevel.Debug;
             ftpServer.Logger.Callback = (level, message) => Console.WriteLine($"[{level}]: {message}");
 
+            var cts = new CancellationTokenSource();
             var serverTask = ftpServer.Start(cts.Token);
 
             Console.WriteLine("FTP server running");
