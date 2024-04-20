@@ -63,7 +63,7 @@ namespace Sample.VirtualFS
             file = null;
             VirtualFsDirectory? targetDir = null;
 
-            if (!createDirectories && !TryGetDirectory(path, out targetDir) || TryGetFile(path, out _))
+            if (!createDirectories && !TryGetDirectory(path, out targetDir))
                 return false;
 
             if (createDirectories)
@@ -71,6 +71,8 @@ namespace Sample.VirtualFS
 
             if (targetDir == null)
                 return false;
+
+            DeleteFile(path);
 
             var ms = new MemoryStream();
             data.CopyTo(ms);

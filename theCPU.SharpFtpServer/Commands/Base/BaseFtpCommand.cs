@@ -9,7 +9,7 @@ using theCPU.SharpFtpServer.Utils;
 
 namespace theCPU.SharpFtpServer.Commands.Base
 {
-    internal abstract class BaseFtpCommand : IFtpCommand
+    public abstract class BaseFtpCommand : IFtpCommand
     {
         public virtual string Name => GetType().Name.Replace("Command", "").ToUpper();
         public virtual byte Priority => 0;

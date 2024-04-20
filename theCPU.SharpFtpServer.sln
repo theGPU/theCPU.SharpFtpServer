@@ -3,9 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "theCPU.SharpFtpServer", "theCPU.SharpFtpServer\theCPU.SharpFtpServer.csproj", "{4DCC1ED1-8D6E-42D2-9F0F-1D3911DA86BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "theCPU.SharpFtpServer", "theCPU.SharpFtpServer\theCPU.SharpFtpServer.csproj", "{4DCC1ED1-8D6E-42D2-9F0F-1D3911DA86BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "Sample\Sample.csproj", "{CFB37101-A8A9-4FC5-8DBD-8CC9785BC474}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample", "Sample\Sample.csproj", "{CFB37101-A8A9-4FC5-8DBD-8CC9785BC474}"
+	ProjectSection(ProjectDependencies) = postProject
+		{44371214-10ED-4429-AB27-AD38EBD29CAF} = {44371214-10ED-4429-AB27-AD38EBD29CAF}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample_Extension", "Sample_Extension\Sample_Extension.csproj", "{44371214-10ED-4429-AB27-AD38EBD29CAF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +26,10 @@ Global
 		{CFB37101-A8A9-4FC5-8DBD-8CC9785BC474}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFB37101-A8A9-4FC5-8DBD-8CC9785BC474}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFB37101-A8A9-4FC5-8DBD-8CC9785BC474}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44371214-10ED-4429-AB27-AD38EBD29CAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44371214-10ED-4429-AB27-AD38EBD29CAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44371214-10ED-4429-AB27-AD38EBD29CAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44371214-10ED-4429-AB27-AD38EBD29CAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,6 +1,7 @@
 ﻿using Sample.VirtualFS;
 using System.Collections.Concurrent;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using theCPU.SharpFtpServer.POCO;
 using theCPU.SharpFtpServer.Server;
@@ -19,6 +20,7 @@ namespace Sample
             var ftpConfig = new FtpServerConfig(new IPEndPoint(IPAddress.Loopback, 2121), 512, true);
             var ftpServer = new FtpServer(ftpConfig);
 
+            Assembly.Load(File.ReadAllBytes("Sample_Extension.dll"), File.ReadAllBytes("Sample_Extension.pdb"));
             CommandRegistar.Init();
 
             ftpServer.Callbacks.OnCheckUsername += (username) => username.Equals("anonymous", StringComparison.InvariantCultureIgnoreCase);
