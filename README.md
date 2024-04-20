@@ -44,6 +44,8 @@ await ftpServer.WaitShutdown();
 
 
 ## Extending
+You can take a look at this [example]("https://github.com/theGPU/theCPU.SharpFtpServer/tree/master/Sample_Extension")
+
 Simply create an assembly and use [BaseFtpCommand](https://github.com/theGPU/theCPU.SharpFtpServer/blob/master/theCPU.SharpFtpServer/Commands/Base/BaseFtpCommand.cs) or [IFtpCommand](https://github.com/theGPU/theCPU.SharpFtpServer/blob/master/theCPU.SharpFtpServer/Commands/Base/IFtpCommand.cs) to create commands. 
 
 Add [IFtpAnonymousCommand](https://github.com/theGPU/theCPU.SharpFtpServer/blob/master/theCPU.SharpFtpServer/Commands/Base/IFtpAnonymousCommand.cs) to make the command available to be invoked without authorization ([USER](https://github.com/theGPU/theCPU.SharpFtpServer/blob/master/theCPU.SharpFtpServer/Commands/UserCommand.cs) and [PASS](https://github.com/theGPU/theCPU.SharpFtpServer/blob/master/theCPU.SharpFtpServer/Commands/PassCommand.cs)).
@@ -54,8 +56,7 @@ Note that when using the [BaseFtpCommand](https://github.com/theGPU/theCPU.Sharp
 
 Note that any default command can be overwritten using [BaseFtpCommand.Priority](https://github.com/theGPU/theCPU.SharpFtpServer/blob/master/theCPU.SharpFtpServer/Commands/Base/BaseFtpCommand.cs#L15)([IFtpCommand.Priority](https://github.com/theGPU/theCPU.SharpFtpServer/blob/master/theCPU.SharpFtpServer/Commands/Base/IFtpCommand.cs#L14)) >0
 
-Note that [CommandRegistar.Init](https://github.com/theGPU/theCPU.SharpFtpServer/blob/master/theCPU.SharpFtpServer/Server/CommandRegistar.cs#L21) should be called after all assemblies with commands have been loaded
+Note that [CommandRegistar.Init](https://github.com/theGPU/theCPU.SharpFtpServer/blob/master/theCPU.SharpFtpServer/Server/CommandRegistar.cs#L21) should be called after all assemblies with commands have been loaded ([Sample](https://github.com/theGPU/theCPU.SharpFtpServer/blob/master/Sample/Program.cs#L23))
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
-
