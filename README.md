@@ -44,7 +44,7 @@ await ftpServer.WaitShutdown();
 
 
 ## Extending
-You can take a look at this [example]("https://github.com/theGPU/theCPU.SharpFtpServer/tree/master/Sample_Extension")
+You can take a look at this [example](https://github.com/theGPU/theCPU.SharpFtpServer/tree/master/Sample_Extension)
 
 Simply create an assembly and use [BaseFtpCommand](https://github.com/theGPU/theCPU.SharpFtpServer/blob/master/theCPU.SharpFtpServer/Commands/Base/BaseFtpCommand.cs) or [IFtpCommand](https://github.com/theGPU/theCPU.SharpFtpServer/blob/master/theCPU.SharpFtpServer/Commands/Base/IFtpCommand.cs) to create commands. 
 
