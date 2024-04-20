@@ -10,6 +10,8 @@ Maximum upload speed (in sample): ~750mb/s (10 threads) or ~350mb/s (single thre
 This library is intended to be used as an adapter for a virtual file system (memory, archives, remote storage, etc.) and for LAN use only.
 
 You write your own [logic](https://github.com/theGPU/theCPU.SharpFtpServer/blob/master/theCPU.SharpFtpServer/Server/FtpServerCallbacks.cs) for interacting with files (Check the [sample](https://github.com/theGPU/theCPU.SharpFtpServer/blob/master/Sample/Program.cs)).
+
+There is no active mode here and only the normal FTP protocol is supported.
 ## Usage
 
 ```C#
